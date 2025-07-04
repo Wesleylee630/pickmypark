@@ -138,14 +138,14 @@ def dropdown_filter(label, options):
     return selected
 
 categories = dropdown_filter(TXT["category"], translate_column(df, "Category", "English").dropna().unique())
-ages = dropdown_filter(TXT["age"], translate_column(df, "Age", language).dropna().unique())
-genders = dropdown_filter(TXT["gender"], translate_column(df, "Gender", language).dropna().unique())
+ages = dropdown_filter(TXT["age"], translate_column(df, "Age", "English").dropna().unique())
+genders = dropdown_filter(TXT["gender"], translate_column(df, "Gender", "English").dropna().unique())
 relations = dropdown_filter(TXT["relationship"], translate_column(df, "Relationship", language).dropna().unique())
 
 filtered_df = df[
     translate_column(df, "Category", "English").isin(categories) &
-    translate_column(df, "Age", language).isin(ages) &
-    translate_column(df, "Gender", language).isin(genders) &
+    translate_column(df, "Age", "English").isin(ages) &
+    translate_column(df, "Gender", "English").isin(genders) &
     translate_column(df, "Relationship", language).isin(relations)
 ]
 
@@ -234,13 +234,13 @@ if not filtered_df.empty:
 
     with col2:
         st.markdown(TXT["charts"]["age"])
-        age_fig = plot_bar_with_labels(translate_column(filtered_df, "Age", language).value_counts().sort_index(), TXT["charts"]["age"], TXT["age"])
+        age_fig = plot_bar_with_labels(translate_column(filtered_df, "Age", "English").value_counts().sort_index(), TXT["charts"]["age"], TXT["age"])
         st.pyplot(age_fig)
 
     col3, col4 = st.columns(2)
     with col3:
         st.markdown(TXT["charts"]["gender"])
-        gender_counts = translate_column(filtered_df, "Gender", language).value_counts()
+        gender_counts = translate_column(filtered_df, "Gender", "English").value_counts()
         fig1, ax1 = plt.subplots()
         wedges, texts, autotexts = ax1.pie(gender_counts, labels=gender_counts.index, autopct="%1.1f%%", startangle=90)
         for text in texts + autotexts:
