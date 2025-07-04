@@ -4,6 +4,10 @@ import pandas as pd
 import folium
 from streamlit_folium import st_folium
 import matplotlib.pyplot as plt
+import matplotlib
+plt.rcParams['font.sans-serif'] = ['SimHei']
+plt.rcParams['axes.unicode_minus'] = False
+
 
 plt.rcParams['font.family'] = 'Arial Unicode MS'
 plt.rcParams['axes.unicode_minus'] = False
@@ -151,7 +155,7 @@ filtered_df = df[
 
 # 地图（默认样式）
 
-st.markdown(f"<h3 style='margin-bottom: 0.5rem; color:#2C6E49;'>{TXT['map']}</h3>", unsafe_allow_html=True)
+st.markdown(f"<h3 style='margin: 0.25rem 0; color:#2C6E49;'>{TXT['map']}</h3>", unsafe_allow_html=True)
 
 if not filtered_df.empty:
     map_center = [filtered_df["Latitude"].mean(), filtered_df["Longitude"].mean()]
