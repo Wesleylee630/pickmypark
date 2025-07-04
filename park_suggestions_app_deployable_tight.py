@@ -137,13 +137,13 @@ def dropdown_filter(label, options):
     selected = st.sidebar.multiselect(label, options, default=options)
     return selected
 
-categories = dropdown_filter(TXT["category"], translate_column(df, "Category", language).dropna().unique())
+categories = dropdown_filter(TXT["category"], translate_column(df, "Category", "English").dropna().unique())
 ages = dropdown_filter(TXT["age"], translate_column(df, "Age", language).dropna().unique())
 genders = dropdown_filter(TXT["gender"], translate_column(df, "Gender", language).dropna().unique())
 relations = dropdown_filter(TXT["relationship"], translate_column(df, "Relationship", language).dropna().unique())
 
 filtered_df = df[
-    translate_column(df, "Category", language).isin(categories) &
+    translate_column(df, "Category", "English").isin(categories) &
     translate_column(df, "Age", language).isin(ages) &
     translate_column(df, "Gender", language).isin(genders) &
     translate_column(df, "Relationship", language).isin(relations)
@@ -229,7 +229,7 @@ if not filtered_df.empty:
     col1, col2 = st.columns(2)
     with col1:
         st.markdown(TXT["charts"]["category"])
-        cat_fig = plot_bar_with_labels(translate_column(filtered_df, "Category", language).value_counts(), TXT["charts"]["category"], TXT["category"])
+        cat_fig = plot_bar_with_labels(translate_column(filtered_df, "Category", "English").value_counts(), TXT["charts"]["category"], TXT["category"])
         st.pyplot(cat_fig)
 
     with col2:
