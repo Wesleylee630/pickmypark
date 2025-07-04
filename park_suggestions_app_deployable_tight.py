@@ -5,13 +5,6 @@ import folium
 from streamlit_folium import st_folium
 import matplotlib.pyplot as plt
 
-from matplotlib import font_manager
-font_path = "NotoSansSC-Regular.otf"
-font_prop = font_manager.FontProperties(fname=font_path)
-plt.rcParams['font.family'] = font_prop.get_name()
-plt.rcParams['axes.unicode_minus'] = False
-
-
 plt.rcParams['font.family'] = 'Arial Unicode MS'
 plt.rcParams['axes.unicode_minus'] = False
 
@@ -61,8 +54,8 @@ LANGUAGES = {
 }
 
 # 语言选择
-language = st.sidebar.selectbox("Language / 语言", list(LANGUAGES.keys()))
-TXT = LANGUAGES[language]
+# language selection removed"Language / 语言", list(LANGUAGES.keys()))
+TXT = LANGUAGES['English']
 
 st.markdown(f"<h1 style='text-align: center; color: #2C6E49; margin-bottom: 0;'>{TXT['title']}</h1>", unsafe_allow_html=True)
 st.markdown("<hr style='margin-top: 0;'>", unsafe_allow_html=True)
