@@ -4,8 +4,11 @@ import pandas as pd
 import folium
 from streamlit_folium import st_folium
 import matplotlib.pyplot as plt
-import matplotlib
-plt.rcParams['font.sans-serif'] = ['SimHei']
+
+from matplotlib import font_manager
+font_path = "NotoSansSC-Regular.otf"
+font_prop = font_manager.FontProperties(fname=font_path)
+plt.rcParams['font.family'] = font_prop.get_name()
 plt.rcParams['axes.unicode_minus'] = False
 
 
