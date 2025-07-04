@@ -54,7 +54,7 @@ LANGUAGES = {
 }
 
 # 语言选择
-# language selection removed"Language / 语言", list(LANGUAGES.keys()))
+# "English" selection removed"Language / 语言", list(LANGUAGES.keys()))
 TXT = LANGUAGES['English']
 
 st.markdown(f"<h1 style='text-align: center; color: #2C6E49; margin-bottom: 0;'>{TXT['title']}</h1>", unsafe_allow_html=True)
@@ -140,13 +140,13 @@ def dropdown_filter(label, options):
 categories = dropdown_filter(TXT["category"], translate_column(df, "Category", "English").dropna().unique())
 ages = dropdown_filter(TXT["age"], translate_column(df, "Age", "English").dropna().unique())
 genders = dropdown_filter(TXT["gender"], translate_column(df, "Gender", "English").dropna().unique())
-relations = dropdown_filter(TXT["relationship"], translate_column(df, "Relationship", language).dropna().unique())
+relations = dropdown_filter(TXT["relationship"], translate_column(df, "Relationship", "English").dropna().unique())
 
 filtered_df = df[
     translate_column(df, "Category", "English").isin(categories) &
     translate_column(df, "Age", "English").isin(ages) &
     translate_column(df, "Gender", "English").isin(genders) &
-    translate_column(df, "Relationship", language).isin(relations)
+    translate_column(df, "Relationship", "English").isin(relations)
 ]
 
 # 地图（默认样式）
@@ -251,7 +251,7 @@ if not filtered_df.empty:
 
     with col4:
         st.markdown(TXT["charts"]["relationship"])
-        rel_fig = plot_bar_with_labels(translate_column(filtered_df, "Relationship", language).value_counts(), TXT["charts"]["relationship"], TXT["relationship"])
+        rel_fig = plot_bar_with_labels(translate_column(filtered_df, "Relationship", "English").value_counts(), TXT["charts"]["relationship"], TXT["relationship"])
         st.pyplot(rel_fig)
 
     if st.button(TXT["export"]):
