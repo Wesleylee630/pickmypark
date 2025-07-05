@@ -166,13 +166,10 @@ if not filtered_df.empty:
         ).add_to(m)
 
     
-    
-with st.container():
-    st_folium(m, width=1200, height=550)
-    st.markdown("")  # Force layout refresh to collapse extra space
-
+if not filtered_df.empty:
+        st_folium(m, width=1200, height=550)
 else:
-    st.warning(TXT["no_result"])
+        st.warning(TXT["no_result"])
 
 # 图表绘制函数
 def plot_bar_with_labels(data, title, xlabel):
