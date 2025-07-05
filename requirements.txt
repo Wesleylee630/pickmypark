@@ -1,7 +1,6 @@
-streamlit
+streamlit>=1.30
 pandas
+openpyxl
 matplotlib
 folium
-streamlit-folium
-openpyxl
-reportlab
+streamlit-folium>=0.12.0
