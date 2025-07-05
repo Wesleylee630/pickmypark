@@ -1,5 +1,9 @@
+
 import streamlit as st
-from reportlab.pdfgen import canvas
+
+import streamlit_folium
+import streamlit as st
+st.write("✅ streamlit-folium version:", streamlit_folium.__version__)
 
 # 自动刷新一次以解决地图下方首次渲染空白
 if "already_refreshed" not in st.session_state:
@@ -157,6 +161,17 @@ filtered_df = df[
 
 # 地图（默认样式）
 
+
+st.markdown("""
+    <style>
+        .element-container:has(iframe) {
+            margin-bottom: -40px;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+
+
 st.markdown(f"<h3 style='margin: 0.25rem 0; color:#2C6E49;'>{TXT['map']}</h3>", unsafe_allow_html=True)
 
 if not filtered_df.empty:
@@ -173,7 +188,7 @@ if not filtered_df.empty:
 
     
 if not filtered_df.empty:
-        st_folium(m, height=500, returned_objects=[], use_container_width=True)
+        st_folium(m, height=500, returned_objects=[], use_container_width=True, iframe=True)
 else:
         st.warning(TXT["no_result"])
 
