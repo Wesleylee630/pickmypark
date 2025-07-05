@@ -1,6 +1,6 @@
 streamlit>=1.30
-pandas>=2.0
-openpyxl>=3.1
-matplotlib>=3.7
-folium>=0.14.0
+pandas
+openpyxl
+matplotlib
+folium
 streamlit-folium>=0.12.0
