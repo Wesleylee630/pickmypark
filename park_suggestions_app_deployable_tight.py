@@ -1,6 +1,3 @@
-import streamlit_folium
-# st.write("✅ streamlit-folium version:", streamlit_folium.__version__)
-
 # 自动刷新一次以解决地图下方首次渲染空白
 if "already_refreshed" not in st.session_state:
     st.session_state["already_refreshed"] = True
