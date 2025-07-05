@@ -6,7 +6,7 @@ if st.session_state.get("refresh_count", 0) < 2:
 
 
 import streamlit_folium
-#import streamlit as st
+import streamlit as st
 import pandas as pd
 import folium
 from streamlit_folium import st_folium
