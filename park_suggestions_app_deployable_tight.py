@@ -1,5 +1,10 @@
 
 import streamlit as st
+
+import streamlit_folium
+import streamlit as st
+st.write("✅ streamlit-folium version:", streamlit_folium.__version__)
+
 # 自动刷新一次以解决地图下方首次渲染空白
 if "already_refreshed" not in st.session_state:
     st.session_state["already_refreshed"] = True
@@ -172,7 +177,7 @@ if not filtered_df.empty:
 
     
 if not filtered_df.empty:
-        st_folium(m, height=500, returned_objects=[], use_container_width=True, iframe=True)
+        st_folium(m, height=500, returned_objects=[], use_container_width=True)
 else:
         st.warning(TXT["no_result"])
 
