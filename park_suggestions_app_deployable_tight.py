@@ -1,5 +1,3 @@
-import streamlit as st
-
 import streamlit_folium
 import streamlit as st
 import pandas as pd
