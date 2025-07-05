@@ -155,7 +155,7 @@ filtered_df = df[
 st.markdown("""
     <style>
         .element-container:has(iframe) {
-            margin-bottom: -200px;
+            margin-bottom: -40px;
         }
     </style>
 """, unsafe_allow_html=True)
