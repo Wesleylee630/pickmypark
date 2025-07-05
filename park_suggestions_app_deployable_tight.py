@@ -24,7 +24,7 @@ const iframeObserver = new ResizeObserver(entries => {
     for (let entry of entries) {
         const height = entry.contentRect.height;
         if (height > 300) {
-            entry.target.style.marginBottom = "-60px";
+            entry.target.style.marginBottom = "-10px";
         } else {
             entry.target.style.marginBottom = "0px";
         }
