@@ -166,7 +166,11 @@ if not filtered_df.empty:
         ).add_to(m)
 
     
+    
+with st.container():
     st_folium(m, width=1200, height=550)
+    st.markdown("")  # Force layout refresh to collapse extra space
+
 else:
     st.warning(TXT["no_result"])
 
