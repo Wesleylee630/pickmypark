@@ -1,43 +1,21 @@
 
 import streamlit as st
 import pandas as pd
-import folium
-from streamlit_folium import st_folium
 import matplotlib.pyplot as plt
 from io import BytesIO
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
 import tempfile
+import leafmap.foliumap as leafmap
+import streamlit.components.v1 as components
 
-# ----------- 自动刷新一次解决首次加载地图白边问题 ----------
-if "refreshed_once" not in st.session_state:
-    st.session_state["refreshed_once"] = True
-    st.rerun()
+st.set_page_config(layout="wide")
 
-plt.rcParams['font.family'] = 'Arial Unicode MS'
-plt.rcParams['axes.unicode_minus'] = False
-
-st.set_page_config(page_title="Park Suggestion Map", layout="wide")
-
-# ---- CSS 强制压缩 iframe 下方空白 ----
-st.markdown("""
-    <style>
-        iframe {
-            display: block;
-            margin-bottom: -60px !important;
-            overflow-y: hidden !important;
-        }
-        .element-container:has(iframe) {
-            margin-bottom: -60px !important;
-            padding-bottom: 0px !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
+# 多语言配置
 LANGUAGES = {
     "English": {
-        "title": "Park Suggestion Interactive Map",
+        "title": "Park Suggestions Interactive Map",
         "filter_header": "Filter Options",
         "category": "Suggestion Type",
         "age": "Age Group",
@@ -46,8 +24,6 @@ LANGUAGES = {
         "map": "Map",
         "export": "Export Charts to PDF",
         "export_btn": "Download PDF",
-        "result_header": "Suggestions Found",
-        "no_result": "No suggestions found. Adjust filters to see data.",
         "charts": {
             "age": "Age Distribution",
             "gender": "Gender Distribution",
@@ -57,10 +33,9 @@ LANGUAGES = {
     }
 }
 
-TXT = LANGUAGES['English']
+TXT = LANGUAGES["English"]
 
-st.markdown(f"<h1 style='text-align: center; color: #2C6E49; margin-bottom: 0;'>{TXT['title']}</h1>", unsafe_allow_html=True)
-st.markdown("<hr style='margin-top: 0;'>", unsafe_allow_html=True)
+st.title(TXT["title"])
 
 @st.cache_data
 def load_data():
@@ -80,17 +55,12 @@ def load_data():
 
 df = load_data()
 
+# 筛选器
 st.sidebar.header(TXT["filter_header"])
-
-def dropdown_filter(label, options):
-    options = sorted(options)
-    selected = st.sidebar.multiselect(label, options, default=options)
-    return selected
-
-categories = dropdown_filter(TXT["category"], df["Category"].dropna().unique())
-ages = dropdown_filter(TXT["age"], df["Age"].dropna().unique())
-genders = dropdown_filter(TXT["gender"], df["Gender"].dropna().unique())
-relations = dropdown_filter(TXT["relationship"], df["Relationship"].dropna().unique())
+categories = st.sidebar.multiselect(TXT["category"], df["Category"].dropna().unique(), default=df["Category"].dropna().unique())
+ages = st.sidebar.multiselect(TXT["age"], df["Age"].dropna().unique(), default=df["Age"].dropna().unique())
+genders = st.sidebar.multiselect(TXT["gender"], df["Gender"].dropna().unique(), default=df["Gender"].dropna().unique())
+relations = st.sidebar.multiselect(TXT["relationship"], df["Relationship"].dropna().unique(), default=df["Relationship"].dropna().unique())
 
 filtered_df = df[
     df["Category"].isin(categories) &
@@ -99,22 +69,18 @@ filtered_df = df[
     df["Relationship"].isin(relations)
 ]
 
-st.markdown(f"<h3 style='margin: 0.25rem 0; color:#2C6E49;'>{TXT['map']}</h3>", unsafe_allow_html=True)
-
+# 显示地图
+st.subheader(TXT["map"])
 if not filtered_df.empty:
-    map_center = [filtered_df["Latitude"].mean(), filtered_df["Longitude"].mean()]
-    m = folium.Map(location=map_center, zoom_start=7)
+    m = leafmap.Map(center=[filtered_df["Latitude"].mean(), filtered_df["Longitude"].mean()], zoom=7)
     for _, row in filtered_df.iterrows():
-        folium.Marker(
-            location=[row["Latitude"], row["Longitude"]],
-            popup=row["Comment"] if pd.notna(row["Comment"]) else "No comment",
-            tooltip=row["Category"],
-            icon=folium.Icon(color="green")
-        ).add_to(m)
-    st_folium(m, height=500, use_container_width=True)
+        popup = row["Comment"] if pd.notna(row["Comment"]) else "No comment"
+        m.add_marker(location=[row["Latitude"], row["Longitude"]], popup=popup)
+    components.html(m.to_html(), height=600, scrolling=False)
 else:
-    st.warning(TXT["no_result"])
+    st.warning("No suggestions found. Adjust filters to see data.")
 
+# 图表绘制
 def plot_bar_with_labels(data, title, xlabel):
     fig, ax = plt.subplots(figsize=(6, 4))
     bars = ax.bar(data.index, data.values, color="#2C6E49")
@@ -124,68 +90,53 @@ def plot_bar_with_labels(data, title, xlabel):
     ax.spines[['top', 'right']].set_visible(False)
     ax.set_axisbelow(True)
     ax.grid(axis='y', linestyle='--', alpha=0.4)
-    ymax = data.max() * 1.05
-    ax.set_ylim(0, ymax)
     for bar in bars:
         height = bar.get_height()
-        ax.annotate(f'{int(height)}', xy=(bar.get_x() + bar.get_width() / 2, height),
+        ax.annotate(f'{int(height)}', xy=(bar.get_x() + bar.get_width()/2, height),
                     xytext=(0, 2), textcoords="offset points", ha='center', fontsize=9)
     plt.xticks(rotation=45, ha='right')
-    plt.tight_layout(pad=0.1)
+    plt.tight_layout()
     return fig
-
-def export_pdf(category_fig, age_fig, gender_fig, relationship_fig):
-    buffer = BytesIO()
-    c = canvas.Canvas(buffer, pagesize=A4)
-    width, height = A4
-    margin = 40
-    chart_h = (height - 3 * margin) / 2
-    charts = [category_fig, age_fig, gender_fig, relationship_fig]
-    for i in range(0, len(charts), 2):
-        for j in range(2):
-            if i + j < len(charts):
-                fig = charts[i + j]
-                with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmpfile:
-                    fig.savefig(tmpfile.name, format='png', bbox_inches='tight', dpi=150)
-                    img = ImageReader(tmpfile.name)
-                    y = height - margin - j * (chart_h + margin)
-                    c.drawImage(img, margin, y - chart_h, width=width - 2 * margin, height=chart_h, preserveAspectRatio=True)
-        c.showPage()
-    c.save()
-    buffer.seek(0)
-    return buffer
 
 if not filtered_df.empty:
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown(TXT["charts"]["category"])
         cat_fig = plot_bar_with_labels(filtered_df["Category"].value_counts(), TXT["charts"]["category"], TXT["category"])
         st.pyplot(cat_fig)
+
     with col2:
-        st.markdown(TXT["charts"]["age"])
         age_fig = plot_bar_with_labels(filtered_df["Age"].value_counts().sort_index(), TXT["charts"]["age"], TXT["age"])
         st.pyplot(age_fig)
+
     col3, col4 = st.columns(2)
     with col3:
-        st.markdown(TXT["charts"]["gender"])
-        gender_counts = filtered_df["Gender"].value_counts()
-        fig1, ax1 = plt.subplots()
-        wedges, texts, autotexts = ax1.pie(gender_counts, labels=gender_counts.index, autopct="%1.1f%%", startangle=90)
-        for text in texts + autotexts:
-            text.set_fontsize(10)
-        ax1.axis("equal")
-        ax1.set_title(TXT["charts"]["gender"], fontsize=13, color="#2C6E49", pad=10)
-        st.pyplot(fig1)
+        gender_fig = plot_bar_with_labels(filtered_df["Gender"].value_counts(), TXT["charts"]["gender"], TXT["gender"])
+        st.pyplot(gender_fig)
+
     with col4:
-        st.markdown(TXT["charts"]["relationship"])
         rel_fig = plot_bar_with_labels(filtered_df["Relationship"].value_counts(), TXT["charts"]["relationship"], TXT["relationship"])
         st.pyplot(rel_fig)
 
+    def export_pdf(*figures):
+        buffer = BytesIO()
+        c = canvas.Canvas(buffer, pagesize=A4)
+        width, height = A4
+        margin = 40
+        chart_h = (height - 3 * margin) / 2
+        for i in range(0, len(figures), 2):
+            for j in range(2):
+                if i + j < len(figures):
+                    fig = figures[i + j]
+                    with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmpfile:
+                        fig.savefig(tmpfile.name, format='png', bbox_inches='tight', dpi=150)
+                        img = ImageReader(tmpfile.name)
+                        y = height - margin - j * (chart_h + margin)
+                        c.drawImage(img, margin, y - chart_h, width=width - 2 * margin, height=chart_h, preserveAspectRatio=True)
+            c.showPage()
+        c.save()
+        buffer.seek(0)
+        return buffer
+
     if st.button(TXT["export"]):
-        pdf_buffer = export_pdf(cat_fig, age_fig, fig1, rel_fig)
-        st.download_button(
-            label=TXT["export_btn"],
-            data=pdf_buffer,
-            file_name="park_suggestions_charts.pdf",
-            mime="application/pdf"
-        )
+        pdf_buf = export_pdf(cat_fig, age_fig, gender_fig, rel_fig)
+        st.download_button(TXT["export_btn"], data=pdf_buf, file_name="charts.pdf", mime="application/pdf")
