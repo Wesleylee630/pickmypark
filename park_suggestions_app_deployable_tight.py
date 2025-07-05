@@ -14,7 +14,7 @@ st.markdown("""
 <style>
 iframe {
     display: block;
-    margin-bottom: -10px;
+    margin-bottom: -60px;
     transition: margin 0.3s ease;
 }
 </style>
@@ -23,8 +23,8 @@ iframe {
 const iframeObserver = new ResizeObserver(entries => {
     for (let entry of entries) {
         const height = entry.contentRect.height;
-        if (height > 300) {
-            entry.target.style.marginBottom = "-10px";
+        if (height > 100) {
+            entry.target.style.marginBottom = "-60px";
         } else {
             entry.target.style.marginBottom = "0px";
         }
