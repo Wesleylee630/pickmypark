@@ -1,9 +1,4 @@
 import streamlit as st
-# 放在首行导入之后
-if st.session_state.get("refresh_count", 0) < 2:
-    st.session_state["refresh_count"] = st.session_state.get("refresh_count", 0) + 1
-    st.experimental_rerun()
-
 
 import streamlit_folium
 import streamlit as st
@@ -11,6 +6,14 @@ import pandas as pd
 import folium
 from streamlit_folium import st_folium
 import matplotlib.pyplot as plt
+
+# 放在首行导入之后
+if st.session_state.get("refresh_count", 0) < 2:
+    st.session_state["refresh_count"] = st.session_state.get("refresh_count", 0) + 1
+    st.experimental_rerun()
+
+
+
 
 plt.rcParams['font.family'] = 'Arial Unicode MS'
 plt.rcParams['axes.unicode_minus'] = False
