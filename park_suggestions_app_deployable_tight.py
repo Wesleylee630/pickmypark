@@ -4,10 +4,11 @@ import streamlit_folium
 import streamlit as st
 st.write("✅ streamlit-folium version:", streamlit_folium.__version__)
 
-# ✅ 自动刷新至多两次，用于强制触发 iframe 高度修复
+# ✅ 自动刷新最多两次，解决地图 iframe 首次高度计算问题
 if st.session_state.get("refresh_count", 0) < 2:
     st.session_state["refresh_count"] = st.session_state.get("refresh_count", 0) + 1
     st.experimental_rerun()
+
 
 import pandas as pd
 import folium
