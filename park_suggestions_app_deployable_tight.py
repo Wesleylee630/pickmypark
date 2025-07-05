@@ -11,10 +11,15 @@ st.set_page_config(page_title="Park Suggestion Map", layout="wide")
 
 import streamlit as st
 
-# 放在首行导入之后
-if st.session_state.get("refresh_count", 0) < 2:
-    st.session_state["refresh_count"] = st.session_state.get("refresh_count", 0) + 1
-    st.experimental_rerun()
+# 仅在 app 完整加载后再触发 rerun，避免初始化时崩溃
+if "refresh_count" not in st.session_state:
+    st.session_state.refresh_count = 0
+
+if st.session_state.refresh_count < 2:
+    st.session_state.refresh_count += 1
+
+    # 👇 用 st.stop() 延迟 rerun 执行，等 app 完整加载后再触发 rerun
+    st.stop()
 
 # 多语言配置
 LANGUAGES = {
@@ -279,3 +284,7 @@ if not filtered_df.empty:
             file_name="park_suggestions_charts.pdf",
             mime="application/pdf"
         )
+
+# 触发 rerun（避免中间断流）
+if st.session_state.refresh_count <= 2:
+    st.experimental_rerun()
