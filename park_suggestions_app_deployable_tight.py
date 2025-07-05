@@ -162,15 +162,7 @@ if not filtered_df.empty:
     map_center = [filtered_df["Latitude"].mean(), filtered_df["Longitude"].mean()]
     m = folium.Map(location=map_center, zoom_start=7)
 
-    
-# 自动缩放视图以适应所有点
-try:
-    bounds = [[row['Latitude'], row['Longitude']] for i, row in filtered_df.iterrows()]
-    if bounds:
-        m.fit_bounds(bounds)
-except:
-    pass
-for _, row in filtered_df.iterrows():
+    for _, row in filtered_df.iterrows():
         folium.Marker(
             location=[row["Latitude"], row["Longitude"]],
             popup=row["Comment"] if pd.notna(row["Comment"]) else "No comment",
@@ -180,7 +172,7 @@ for _, row in filtered_df.iterrows():
 
     
 if not filtered_df.empty:
-        st_folium(m, width=1200, height=500, returned_objects=[])
+        st_folium(m, height=500, returned_objects=[], use_container_width=True, iframe=True)
 else:
         st.warning(TXT["no_result"])
 
