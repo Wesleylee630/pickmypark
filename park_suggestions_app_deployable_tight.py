@@ -214,7 +214,7 @@ def export_pdf(category_fig, age_fig, gender_fig, relationship_fig):
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
-    margin = 40
+    margin = 50
     chart_h = (height - 3 * margin) / 2  # 2 charts per page
 
     charts = [category_fig, age_fig, gender_fig, relationship_fig]
