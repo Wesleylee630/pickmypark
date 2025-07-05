@@ -9,6 +9,12 @@ plt.rcParams['font.family'] = 'Arial Unicode MS'
 plt.rcParams['axes.unicode_minus'] = False
 
 
+# ✅ 自动刷新最多两次，用于修复 st_folium 地图渲染高度
+if st.session_state.get("refresh_count", 0) < 2:
+    st.session_state["refresh_count"] = st.session_state.get("refresh_count", 0) + 1
+    st.experimental_rerun()
+
+
 st.set_page_config(page_title="Park Suggestion Map", layout="wide")
 
 # 多语言配置
