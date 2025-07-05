@@ -14,7 +14,7 @@ st.markdown("""
 <style>
 iframe {
     display: block;
-    margin-bottom: -60px;
+    margin-bottom: -10px;
     transition: margin 0.3s ease;
 }
 </style>
