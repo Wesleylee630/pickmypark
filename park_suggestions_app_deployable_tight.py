@@ -1,7 +1,5 @@
-
-import streamlit as st
-
 import streamlit_folium
+# st.write("✅ streamlit-folium version:", streamlit_folium.__version__)
 import streamlit as st
 st.write("✅ streamlit-folium version:", streamlit_folium.__version__)
 
