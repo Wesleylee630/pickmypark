@@ -178,7 +178,7 @@ if not filtered_df.empty:
 
     
 if not filtered_df.empty:
-        st_folium(m, height=500, returned_objects=[], use_container_width=True, iframe=True)
+        st_folium(m, height=500, returned_objects=[], use_container_width=True, iframe=False)
 else:
         st.warning(TXT["no_result"])
 
