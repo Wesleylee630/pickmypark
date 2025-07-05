@@ -9,15 +9,6 @@ plt.rcParams['font.family'] = 'Arial Unicode MS'
 plt.rcParams['axes.unicode_minus'] = False
 st.set_page_config(page_title="Park Suggestion Map", layout="wide")
 
-# 仅在 app 完整加载后再触发 rerun，避免初始化时崩溃
-if "refresh_count" not in st.session_state:
-    st.session_state.refresh_count = 0
-
-if st.session_state.refresh_count < 2:
-    st.session_state.refresh_count += 1
-
-    # 👇 用 st.stop() 延迟 rerun 执行，等 app 完整加载后再触发 rerun
-    st.stop()
 
 # 多语言配置
 LANGUAGES = {
