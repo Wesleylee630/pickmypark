@@ -1,6 +1,5 @@
 
 import streamlit as st
-
 import streamlit_folium
 import streamlit as st
 st.write("✅ streamlit-folium version:", streamlit_folium.__version__)
@@ -10,6 +9,10 @@ if "already_refreshed" not in st.session_state:
     st.session_state["already_refreshed"] = True
     st.rerun()
 
+if "rerun_done" not in st.session_state:
+    st.session_state["rerun_done"] = True
+    st.experimental_rerun()
+
 import pandas as pd
 import folium
 from streamlit_folium import st_folium
@@ -17,7 +20,6 @@ import matplotlib.pyplot as plt
 
 plt.rcParams['font.family'] = 'Arial Unicode MS'
 plt.rcParams['axes.unicode_minus'] = False
-
 
 st.set_page_config(page_title="Park Suggestion Map", layout="wide")
 
