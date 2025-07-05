@@ -2,9 +2,8 @@
 import streamlit as st
 import streamlit_folium
 import streamlit as st
-#st.write("✅ streamlit-folium version:", streamlit_folium.__version__)
+st.write("✅ streamlit-folium version:", streamlit_folium.__version__)
 
-# 自动刷新一次以解决地图下方首次渲染空白
 # ✅ 自动刷新至多两次，用于强制触发 iframe 高度修复
 if st.session_state.get("refresh_count", 0) < 2:
     st.session_state["refresh_count"] = st.session_state.get("refresh_count", 0) + 1
