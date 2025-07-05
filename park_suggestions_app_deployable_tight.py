@@ -1,21 +1,5 @@
-
-
-import streamlit as st
-
-# ✅ 自动刷新最多两次，解决地图 iframe 首次高度计算问题
-if st.session_state.get("refresh_count", 0) < 2:
-    st.session_state["refresh_count"] = st.session_state.get("refresh_count", 0) + 1
-    st.experimental_rerun()
-
-
 import streamlit_folium
 import streamlit as st
-
-# 自动刷新一次以解决地图下方首次渲染空白
-if "already_refreshed" not in st.session_state:
-    st.session_state["already_refreshed"] = True
-    st.rerun()
-
 import pandas as pd
 import folium
 from streamlit_folium import st_folium
