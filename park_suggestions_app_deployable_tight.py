@@ -4,26 +4,33 @@ import pandas as pd
 import folium
 from streamlit_folium import st_folium
 import matplotlib.pyplot as plt
-
 from io import BytesIO
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
 import tempfile
 
+# ----------- 自动刷新一次解决首次加载地图白边问题 ----------
+if "refreshed_once" not in st.session_state:
+    st.session_state["refreshed_once"] = True
+    st.rerun()
+
 plt.rcParams['font.family'] = 'Arial Unicode MS'
 plt.rcParams['axes.unicode_minus'] = False
 
 st.set_page_config(page_title="Park Suggestion Map", layout="wide")
 
-# ---- Static CSS to suppress iframe bottom whitespace ----
+# ---- CSS 强制压缩 iframe 下方空白 ----
 st.markdown("""
     <style>
         iframe {
+            display: block;
             margin-bottom: -60px !important;
+            overflow-y: hidden !important;
         }
         .element-container:has(iframe) {
             margin-bottom: -60px !important;
+            padding-bottom: 0px !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -97,7 +104,6 @@ st.markdown(f"<h3 style='margin: 0.25rem 0; color:#2C6E49;'>{TXT['map']}</h3>", 
 if not filtered_df.empty:
     map_center = [filtered_df["Latitude"].mean(), filtered_df["Longitude"].mean()]
     m = folium.Map(location=map_center, zoom_start=7)
-
     for _, row in filtered_df.iterrows():
         folium.Marker(
             location=[row["Latitude"], row["Longitude"]],
@@ -105,7 +111,6 @@ if not filtered_df.empty:
             tooltip=row["Category"],
             icon=folium.Icon(color="green")
         ).add_to(m)
-
     st_folium(m, height=500, use_container_width=True)
 else:
     st.warning(TXT["no_result"])
