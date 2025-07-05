@@ -9,6 +9,37 @@ plt.rcParams['font.family'] = 'Arial Unicode MS'
 plt.rcParams['axes.unicode_minus'] = False
 st.set_page_config(page_title="Park Suggestion Map", layout="wide")
 
+# ✅ 动态监听 iframe 高度，自动压缩地图下方白边
+st.markdown("""
+<style>
+iframe {
+    display: block;
+    margin-bottom: -60px;
+    transition: margin 0.3s ease;
+}
+</style>
+
+<script>
+const iframeObserver = new ResizeObserver(entries => {
+    for (let entry of entries) {
+        const height = entry.contentRect.height;
+        if (height > 300) {
+            entry.target.style.marginBottom = "-60px";
+        } else {
+            entry.target.style.marginBottom = "0px";
+        }
+    }
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+    const iframe = document.querySelector("iframe");
+    if (iframe) {
+        iframeObserver.observe(iframe);
+    }
+});
+</script>
+""", unsafe_allow_html=True)
+
 # 多语言配置
 LANGUAGES = {
     "English": {
