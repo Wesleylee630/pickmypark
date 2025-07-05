@@ -18,7 +18,9 @@ if st.session_state.refresh_count < 2:
 
     # 👇 用 st.stop() 延迟 rerun 执行，等 app 完整加载后再触发 rerun
     st.stop()
-
+# 触发 rerun（避免中间断流）
+    if st.session_state.refresh_count <= 2:
+    st.experimental_rerun()
 # 多语言配置
 LANGUAGES = {
     "English": {
@@ -283,6 +285,4 @@ if not filtered_df.empty:
             mime="application/pdf"
         )
 
-# 触发 rerun（避免中间断流）
-if st.session_state.refresh_count <= 2:
-    st.experimental_rerun()
+
