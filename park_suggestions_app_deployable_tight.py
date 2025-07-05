@@ -9,6 +9,20 @@ plt.rcParams['font.family'] = 'Arial Unicode MS'
 plt.rcParams['axes.unicode_minus'] = False
 st.set_page_config(page_title="Park Suggestion Map", layout="wide")
 
+# ✅ CSS 强制去除地图底部空白
+st.markdown("""
+    <style>
+        .element-container:has(iframe) {
+            margin-bottom: -60px;
+        }
+        iframe {
+            min-height: 500px !important;
+            height: 500px !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+
 
 # 多语言配置
 LANGUAGES = {
